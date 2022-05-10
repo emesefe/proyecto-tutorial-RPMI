@@ -7,8 +7,9 @@ using UnityEngine;
 public class TutorialManager : MonoBehaviour
 {
     public GameObject[] tutorialTips;
+    public GameObject player;
 
-    private int index;
+    private int index; // Punto del tutorial en el que me encuentro
     
     private PlayerController playerController;
     private float jumpForceValue;
@@ -29,17 +30,20 @@ public class TutorialManager : MonoBehaviour
     {
         if (index == 0)
         {
-            if (Math.Abs(Input.GetAxis("Horizontal")) > tol)
+            if (Mathf.Abs(Input.GetAxis("Horizontal")) > 0)
             {
                 StartCoroutine(ShowNext());
             }
         }else if (index == 1)
         {
-            if (Input.GetKeyDown(KeyCode.Space))
+            if (Input.GetKeyDown(KeyCode.Space) && player.transform.position.x > tutorialTips[1].transform.position.x)
             {
                 playerController.jumpForce = jumpForceValue;
                 StartCoroutine(ShowNext());
             }
+        }else if (index == 2)
+        {
+
         }
         
     }
@@ -52,6 +56,7 @@ public class TutorialManager : MonoBehaviour
             {
                 tutorialTips[i].SetActive(true);
                 StartCoroutine(FadeIn(i));
+                StartCoroutine(Letters(i));
             }
             else
             {
@@ -83,6 +88,7 @@ public class TutorialManager : MonoBehaviour
     
     private IEnumerator FadeOut(int idx)
     {
+
         GameObject child = tutorialTips[idx].transform.GetChild(0).gameObject;
         TextMeshProUGUI textAlpha = child.GetComponent<TextMeshProUGUI>();
         textAlpha.alpha = 1;
@@ -93,5 +99,20 @@ public class TutorialManager : MonoBehaviour
             yield return new WaitForSeconds(0.1f);
         }
         textAlpha.alpha = 0;
+    }
+
+    private IEnumerator Letters(int idx)
+    {
+        GameObject child = tutorialTips[idx].transform.GetChild(0).gameObject;
+        TextMeshProUGUI message = child.GetComponent<TextMeshProUGUI>();
+        string originalMessage = message.text;
+
+        message.text = "";
+
+        foreach (char c in originalMessage)
+        {
+            message.text = $"{message.text}{c}";
+            yield return new WaitForSeconds(0.1f);
+        }
     }
 }

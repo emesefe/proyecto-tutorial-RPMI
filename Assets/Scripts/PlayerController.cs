@@ -23,7 +23,7 @@ public class PlayerController : MonoBehaviour
         horizontalInput = Input.GetAxis("Horizontal");
         
         rigidbody.AddForce(Vector3.right * (speed * horizontalInput));
-        IsOnTheGround();
+        //IsOnTheGround();
         if (Input.GetKeyDown(KeyCode.Space) && IsOnTheGround())
         {
             rigidbody.AddForce(Vector3.up * jumpForce, ForceMode.Impulse);
@@ -32,13 +32,25 @@ public class PlayerController : MonoBehaviour
 
     private bool IsOnTheGround()
     {
-        float yOffset = 0.2f;
+        // Declaración y configuración del rayo
+        float yOffset = 0.2f; // Offset vertical
         Vector3 origin = transform.position;
         SphereCollider playerCollider = GetComponent<SphereCollider>();
 
         Physics.Raycast(origin, Vector3.down, out RaycastHit hit, playerCollider.radius + yOffset, groundLayer);
-        
-        Color raycastColor = hit.collider != null ? Color.green : Color.magenta;
+
+        // Dibujo del rayo
+        Color raycastColor = hit.collider != null ?  Color.green :  Color.magenta;
+
+        /*
+        if (hit.collider != null)
+        {
+            raycastColor = Color.green;
+        }
+        else
+        {
+            raycastColor = Color.magenta;
+        }*/
         
         Debug.DrawRay(origin, Vector3.down * (playerCollider.radius + yOffset), raycastColor, 0, false);
         return hit.collider != null;
